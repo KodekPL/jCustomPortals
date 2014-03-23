@@ -1,0 +1,400 @@
+package jcraft.customportals;
+
+import java.util.List;
+import java.util.Set;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
+import com.sk89q.worldedit.bukkit.selections.Selection;
+
+public class CommandsHandler implements CommandExecutor {
+
+    private MainClass mainClass;
+
+    public CommandsHandler(MainClass mainClass) {
+        this.mainClass = mainClass;
+    }
+
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        Player player = null;
+        if (sender instanceof Player) {
+            player = (Player) sender;
+        }
+
+        if (args.length == 0) {
+            final String jportal = ChatColor.GOLD + "  /jportal " + ChatColor.YELLOW;
+            // jportal create destination [NAME]
+            player.sendMessage(jportal + "create destination [DESTINATION NAME]" + ChatColor.BLUE
+                    + " - Creates teleport destination with specified name on player position.");
+            // jportal create portal [NAME] [NAME]
+            player.sendMessage(jportal + "create portal [PORTAL NAME] [DESTINATION NAME]" + ChatColor.BLUE
+                    + " - Creates portal with the specified name to destination with specified name.");
+            // jportal info destination [NAME]
+            player.sendMessage(jportal + "info destination [DESTINATION NAME]" + ChatColor.BLUE
+                    + " - Displays informations about destintion of specified name.");
+            // jportal info portal [NAME]
+            player.sendMessage(jportal + "info portal [PORTAL NAME]" + ChatColor.BLUE
+                    + " - Displays informations about destintion of specified name.");
+            // jportal delete destination [NAME]
+            player.sendMessage(jportal + "delete destination [DESTINATION NAME]" + ChatColor.BLUE
+                    + " - Removes portal destination of specified name.");
+            // jportal delete portal [NAME]
+            player.sendMessage(jportal + "delete portal [PORTAL NAME]" + ChatColor.BLUE + " - Removes portal of specified name.");
+            // jportal modify destination [NAME]
+            player.sendMessage(jportal + "modify destination [DESTINATION NAME]" + ChatColor.BLUE
+                    + " - Changes destination position of specified name to player position.");
+            // jportal modify portal destination [NAME] [NAME]
+            player.sendMessage(jportal + "modify portal destination [PORTAL NAME] [DESTINATION NAME]" + ChatColor.BLUE
+                    + " - Changes destination of specified portal name.");
+            // jportal modify portal location [NAME]
+            player.sendMessage(jportal + "modify portal location [PORTAL NAME]" + ChatColor.BLUE + " - Changes portal shape of specified name.");
+            // jportal teleport [NAME]
+            player.sendMessage(jportal + "teleport [DESTINATION NAME]" + ChatColor.BLUE + " - Teleports to destination of specified name.");
+            // jportal list portal
+            player.sendMessage(jportal + "list portal" + ChatColor.BLUE + " - Displays list of all portal names.");
+            // jportal list destination
+            player.sendMessage(jportal + "list destination" + ChatColor.BLUE + " - Displays list of all destination names.");
+            // jportal reload
+            player.sendMessage(jportal + "reload" + ChatColor.BLUE + " - Reloads config file, portal list and destination list.");
+            return true;
+        }
+
+        if (args.length == 1) {
+            if (args[0].equalsIgnoreCase("reload")) {
+                reloadPluginCmd(player, "jportal.admin", args);
+                return true;
+            }
+        } else if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("teleport")) {
+                teleportDestCmd(player, "jportal.teleportdest", args);
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("list") && args[1].equalsIgnoreCase("destination")) {
+                listDestCmd(player, "jportal.listdest", args);
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("list") && args[1].equalsIgnoreCase("portal")) {
+                listPortalCmd(player, "jportal.listportal", args);
+                return true;
+            }
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("create") && args[1].equalsIgnoreCase("destination")) {
+                createDestinationCmd(player, "jportal.createdest", args);
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("info") && args[1].equalsIgnoreCase("portal")) {
+                infoPortalCmd(player, "jportal.infoportal", args);
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("info") && args[1].equalsIgnoreCase("destination")) {
+                infoDestinationCmd(player, "jportal.infodest", args);
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("delete") && args[1].equalsIgnoreCase("portal")) {
+                deletePortalCmd(player, "jportal.deleteportal", args);
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("delete") && args[1].equalsIgnoreCase("destination")) {
+                deleteDestinationCmd(player, "jportal.deletedest", args);
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("modify") && args[1].equalsIgnoreCase("destination")) {
+                modifyDestinationCmd(player, "jportal.modifydest", args);
+                return true;
+            }
+        } else if (args.length == 4) {
+            if (args[0].equalsIgnoreCase("create") && args[1].equalsIgnoreCase("portal")) {
+                createPortalCmd(player, "jportal.createportal", args);
+                return true;
+            }
+            if (args[0].equalsIgnoreCase("modify") && args[1].equalsIgnoreCase("portal") && args[2].equalsIgnoreCase("location")) {
+                modifyPortalLocationCmd(player, "jportal.modifyportal", args);
+                return true;
+            }
+        } else if (args.length == 5) {
+            if (args[0].equalsIgnoreCase("modify") && args[1].equalsIgnoreCase("portal") && args[2].equalsIgnoreCase("destination")) {
+                modifyPortalDestCmd(player, "jportal.modifyportal", args);
+                return true;
+            }
+        }
+
+        player.sendMessage(MainClass.prefix + ChatColor.RED + "Command was not found!");
+        return false;
+    }
+
+    private boolean hasPermission(Player player, String permission) {
+        if (player == null) return false;
+        if (!player.hasPermission(permission)) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "No permission!");
+            return false;
+        }
+        return true;
+    }
+
+    /**********/
+    /** CELE **/
+    /**********/
+
+    public void createDestinationCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        final String destinationName = args[2].toLowerCase();
+        final Location destination = CustomPortal.getDestination(destinationName);
+        if (destination != null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name already exists!");
+            return;
+        }
+
+        CustomPortal.addDestination(destinationName, player.getEyeLocation().subtract(0, 1, 0), true);
+        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Destination with name '" + destinationName + "' has been created and saved!");
+    }
+
+    public void infoDestinationCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        final String destinationName = args[2].toLowerCase();
+        final Location destination = CustomPortal.getDestination(destinationName);
+        if (destination == null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            return;
+        }
+
+        player.sendMessage(ChatColor.YELLOW + "=== Destination " + destinationName + " ===");
+        player.sendMessage(ChatColor.GRAY + "  World >> " + destination.getWorld().getName());
+        player.sendMessage(ChatColor.GRAY + "  Position >> X: " + destination.getX() + ", Y: " + destination.getY() + ", Z: " + destination.getZ());
+
+        final List<CustomPortal> linkedPortals = PortalWorld.getLinkedPortals(destinationName);
+        final StringBuilder sLinked = new StringBuilder();
+        boolean color = true;
+        for (CustomPortal portal : linkedPortals) {
+            if (color) {
+                sLinked.append(ChatColor.YELLOW).append(portal.getName()).append(ChatColor.WHITE).append(", ");
+                color = false;
+            } else {
+                sLinked.append(portal.getName()).append(", ");
+                color = true;
+            }
+        }
+        player.sendMessage(ChatColor.GRAY + "  Linked portals >> " + sLinked.toString());
+
+        player.sendMessage(ChatColor.YELLOW + "======");
+    }
+
+    public void listDestCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        final StringBuilder sDest = new StringBuilder();
+        boolean color = false;
+        final Set<String> destinations = CustomPortal.getDestinations();
+        for (String name : destinations) {
+            if (color) {
+                sDest.append(ChatColor.YELLOW).append(name).append(ChatColor.WHITE).append(", ");
+                color = false;
+            } else {
+                sDest.append(name).append(", ");
+                color = true;
+            }
+        }
+        player.sendMessage(ChatColor.GRAY + "Existing destinations: " + ChatColor.WHITE + sDest.toString());
+    }
+
+    public void modifyDestinationCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        final String destinationName = args[2].toLowerCase();
+        final Location destination = CustomPortal.getDestination(destinationName);
+        if (destination == null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            return;
+        }
+
+        CustomPortal.addDestination(destinationName, player.getEyeLocation().subtract(0, 1, 0), true);
+        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Destination with name '" + destinationName + "' has been modified and saved!");
+    }
+
+    public void deleteDestinationCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        final String destinationName = args[2].toLowerCase();
+        final Location destination = CustomPortal.getDestination(destinationName);
+        if (destination == null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            return;
+        }
+
+        final List<CustomPortal> linkedPortals = PortalWorld.getLinkedPortals(destinationName);
+        if (!linkedPortals.isEmpty()) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "There are portals using this destination!");
+            return;
+        }
+
+        CustomPortal.removeDestination(destinationName);
+        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Destination with name '" + destinationName + "' has been removed!");
+    }
+
+    public void teleportDestCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        final String destinationName = args[1].toLowerCase();
+        final Location destination = CustomPortal.getDestination(destinationName);
+        if (destination == null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            return;
+        }
+
+        player.teleport(destination);
+        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Teleported to destination with name '" + destinationName + "'!");
+    }
+
+    /***************/
+    /*** PORTALE ***/
+    /***************/
+
+    public void createPortalCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        final String portalName = args[2].toLowerCase();
+        final CustomPortal portal = CustomPortal.getPortal(portalName);
+        if (portal != null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Portal with this name already exists!");
+            return;
+        }
+
+        final String destinationName = args[3].toLowerCase();
+        Location destination = CustomPortal.getDestination(destinationName);
+        if (destination == null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            return;
+        }
+
+        if (!MainClass.getWorldEdit().hasSelected(player)) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "You need to first select region with WorldEdit to create portal!");
+            return;
+        }
+
+        Selection selection = MainClass.getWorldEdit().getSelection(player);
+        Location loc1 = selection.getMinimumPoint();
+        Location loc2 = selection.getMaximumPoint();
+
+        final PortalLocation pLoc = new PortalLocation(selection.getWorld(), new Vector(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ()),
+                new Vector(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ()));
+        CustomPortal.addPortal(portalName, new CustomPortal(portalName, pLoc, destinationName), true);
+        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portalName + "' has been created and saved!");
+    }
+
+    public void infoPortalCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        CustomPortal portal = CustomPortal.getPortal(args[2]);
+        if (portal == null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Portal with this name does not exists!");
+            return;
+        }
+
+        player.sendMessage(ChatColor.YELLOW + "=== Portal " + portal.getName() + " ===");
+        player.sendMessage(ChatColor.GRAY + "  World >> " + portal.getLocation().getWorld().getName());
+        player.sendMessage(ChatColor.GRAY + "  Region position >> " + portal.getLocation().serializeLocation());
+        player.sendMessage(ChatColor.GRAY + "  Destination >> " + portal.getDestination());
+        player.sendMessage(ChatColor.YELLOW + "======");
+    }
+
+    public void listPortalCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        StringBuilder sPortal = new StringBuilder();
+        boolean color = false;
+        List<CustomPortal> portals = CustomPortal.getPortals();
+        for (CustomPortal portal : portals) {
+            if (color) {
+                sPortal.append(ChatColor.YELLOW).append(portal.getName()).append(ChatColor.WHITE).append(", ");
+                color = false;
+            } else {
+                sPortal.append(portal.getName()).append(", ");
+                color = true;
+            }
+        }
+        player.sendMessage(ChatColor.GRAY + "Existing portal names: " + ChatColor.WHITE + sPortal.toString());
+    }
+
+    public void modifyPortalLocationCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        String portalName = args[3].toLowerCase();
+        CustomPortal portal = CustomPortal.getPortal(portalName);
+        if (portal == null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Portal with this name does not exists!");
+            return;
+        }
+
+        if (!MainClass.getWorldEdit().hasSelected(player)) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "You need to first select region with WorldEdit to modify portal!");
+            return;
+        }
+
+        Selection selection = MainClass.getWorldEdit().getSelection(player);
+        Location loc1 = selection.getMinimumPoint();
+        Location loc2 = selection.getMaximumPoint();
+
+        PortalLocation pLoc = new PortalLocation(selection.getWorld(), new Vector(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ()), new Vector(
+                loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ()));
+        CustomPortal.removePortal(portal.getName(), portal.getLocation().getWorld());
+        CustomPortal.addPortal(portal.getName(), new CustomPortal(portal.getName(), pLoc, portal.getDestination()), true);
+        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portalName + "' has been modified and saved!");
+    }
+
+    public void modifyPortalDestCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        String portalName = args[3].toLowerCase();
+        CustomPortal portal = CustomPortal.getPortal(portalName);
+        if (portal == null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Portal with this name does not exists!");
+            return;
+        }
+
+        String destinationName = args[4].toLowerCase();
+        Location destination = CustomPortal.getDestination(destinationName);
+        if (destination == null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            return;
+        }
+
+        portal.setDestination(destinationName);
+        CustomPortal.addPortal(portal.getName(), portal, true);
+        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portal.getName() + "' has been modified and saved!");
+    }
+
+    public void deletePortalCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        String portalName = args[2].toLowerCase();
+        CustomPortal portal = CustomPortal.getPortal(portalName);
+        if (portal == null) {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Portal with this name does not exists!");
+            return;
+        }
+
+        CustomPortal.removePortal(portalName, portal.getLocation().getWorld());
+        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portalName + "' has been removed!");
+    }
+
+    /************/
+    /*** INNE ***/
+    /************/
+
+    public void reloadPluginCmd(Player player, String permission, String[] args) {
+        if (!hasPermission(player, permission)) return;
+
+        mainClass.loadConfig();
+        CustomPortal.loadDestinations();
+        CustomPortal.loadPortals();
+        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Config file, destination list and portal list has been reloaded!");
+    }
+
+}
