@@ -1,5 +1,8 @@
 package jcraft.customportals;
 
+import jcraft.customportals.event.JCPortalEvent;
+
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,7 +30,12 @@ public class MovementListener implements Listener {
 
         final CustomPortal portal = session.getStandingInPortal();
         if (portal != null) {
-            portal.teleport(player);
+            // Portal Custom Event
+            JCPortalEvent portalevent = new JCPortalEvent(player, portal);
+            Bukkit.getServer().getPluginManager().callEvent(portalevent);
+            
+            if(!portalevent.isCancelled())
+                portal.teleport(player);
         }
     }
 }
