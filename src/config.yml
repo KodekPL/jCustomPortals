@@ -1,2 +1,3 @@
 TeleportCooldown: 1000
 CheckPermissions: true
+ResetFalling: true

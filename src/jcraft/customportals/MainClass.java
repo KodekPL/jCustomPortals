@@ -15,6 +15,7 @@ public class MainClass extends JavaPlugin {
     private static WorldEditHandler worldEdit;
     public static long teleportCooldown;
     public static boolean checkPermissions;
+    public static boolean resetFalling;
 
     public void onEnable() {
         CONFIG_FILE = new File(this.getDataFolder(), "config.yml");
@@ -37,6 +38,7 @@ public class MainClass extends JavaPlugin {
             final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(CONFIG_FILE);
             ymlConfig.set("TeleportCooldown", 1000L);
             ymlConfig.set("CheckPermissions", true);
+            ymlConfig.set("ResetFalling", true);
             try {
                 ymlConfig.save(CONFIG_FILE);
             } catch (IOException e) {
@@ -47,8 +49,9 @@ public class MainClass extends JavaPlugin {
 
     public void loadConfig() {
         final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(CONFIG_FILE);
-        checkPermissions = ymlConfig.getBoolean("CheckPermissions", true);
         teleportCooldown = ymlConfig.getLong("TeleportCooldown", 1000L);
+        checkPermissions = ymlConfig.getBoolean("CheckPermissions", true);
+        resetFalling = ymlConfig.getBoolean("ResetFalling", true);
     }
 
     public static WorldEditHandler getWorldEdit() {
