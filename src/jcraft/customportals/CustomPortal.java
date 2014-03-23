@@ -51,6 +51,7 @@ public class CustomPortal {
         }
         final Location target = PortalWorld.getDestination(this.destination);
         final CustomPortalTeleportEvent event = new CustomPortalTeleportEvent(player, this, target);
+        Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
             player.setFallDistance(0);
             player.teleport(event.getTarget(), TeleportCause.PLUGIN);
