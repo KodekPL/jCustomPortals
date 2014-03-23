@@ -30,21 +30,24 @@ public class CommandsHandler implements CommandExecutor {
 
         if (args.length == 0) {
             final String jportal = ChatColor.GOLD + "  /jportal " + ChatColor.YELLOW;
-            player.sendMessage(new String[]{
-                  jportal + "create destination [DESTINATION NAME]" + ChatColor.BLUE + " - Creates teleport destination with specified name on player position.",
-                  jportal + "create portal [PORTAL NAME] [DESTINATION NAME]" + ChatColor.BLUE + " - Creates portal with the specified name to destination with specified name.",
-                  jportal + "info destination [DESTINATION NAME]" + ChatColor.BLUE + " - Displays informations about destintion of specified name.",
-                  jportal + "info portal [PORTAL NAME]" + ChatColor.BLUE + " - Displays informations about destintion of specified name.",
-                  jportal + "delete destination [DESTINATION NAME]" + ChatColor.BLUE + " - Removes portal destination of specified name.",
-                  jportal + "delete portal [PORTAL NAME]" + ChatColor.BLUE + " - Removes portal of specified name.",
-                  jportal + "modify destination [DESTINATION NAME]" + ChatColor.BLUE + " - Changes destination position of specified name to player position.",
-                  jportal + "modify portal destination [PORTAL NAME] [DESTINATION NAME]" + ChatColor.BLUE + " - Changes destination of specified portal name.",
-                  jportal + "modify portal location [PORTAL NAME]" + ChatColor.BLUE + " - Changes portal shape of specified name.",
-                  jportal + "teleport [DESTINATION NAME]" + ChatColor.BLUE + " - Teleports to destination of specified name.",
-                  jportal + "list portal" + ChatColor.BLUE + " - Displays list of all portal names.",
-                  jportal + "list destination" + ChatColor.BLUE + " - Displays list of all destination names.",
-                  jportal + "reload" + ChatColor.BLUE + " - Reloads config file, portal list and destination list."
-            });
+            player.sendMessage(new String[] {
+                    jportal + "create destination [DESTINATION NAME]" + ChatColor.BLUE
+                            + " - Creates teleport destination with specified name on player position.",
+                    jportal + "create portal [PORTAL NAME] [DESTINATION NAME]" + ChatColor.BLUE
+                            + " - Creates portal with the specified name to destination with specified name.",
+                    jportal + "info destination [DESTINATION NAME]" + ChatColor.BLUE + " - Displays informations about destintion of specified name.",
+                    jportal + "info portal [PORTAL NAME]" + ChatColor.BLUE + " - Displays informations about destintion of specified name.",
+                    jportal + "delete destination [DESTINATION NAME]" + ChatColor.BLUE + " - Removes portal destination of specified name.",
+                    jportal + "delete portal [PORTAL NAME]" + ChatColor.BLUE + " - Removes portal of specified name.",
+                    jportal + "modify destination [DESTINATION NAME]" + ChatColor.BLUE
+                            + " - Changes destination position of specified name to player position.",
+                    jportal + "modify portal destination [PORTAL NAME] [DESTINATION NAME]" + ChatColor.BLUE
+                            + " - Changes destination of specified portal name.",
+                    jportal + "modify portal location [PORTAL NAME]" + ChatColor.BLUE + " - Changes portal shape of specified name.",
+                    jportal + "teleport [DESTINATION NAME]" + ChatColor.BLUE + " - Teleports to destination of specified name.",
+                    jportal + "list portal" + ChatColor.BLUE + " - Displays list of all portal names.",
+                    jportal + "list destination" + ChatColor.BLUE + " - Displays list of all destination names.",
+                    jportal + "reload" + ChatColor.BLUE + " - Reloads config file, portal list and destination list." });
             return true;
         }
 

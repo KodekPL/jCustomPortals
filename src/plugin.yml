@@ -1,5 +1,5 @@
 name: jCustomPortals
-version: 1.0.2
+version: 1.0.3
 main: jcraft.customportals.MainClass
 author: Kodek
 depend: [WorldEdit]

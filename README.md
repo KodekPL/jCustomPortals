@@ -1,4 +1,4 @@
-jCustomPortals 1.0.2
+jCustomPortals 1.0.3
 ==============
 
 Bukkit plugin to create custom portals.
