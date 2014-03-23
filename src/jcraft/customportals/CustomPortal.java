@@ -45,13 +45,16 @@ public class CustomPortal {
         this.destination = name;
     }
 
-    public void teleport(final Player player) {
+    public void teleport(Player player) {
         if (MainClass.checkPermissions && !player.hasPermission("jportal.teleport." + this.name)) {
             return;
         }
         final Location target = PortalWorld.getDestination(this.destination);
-        player.setFallDistance(0);
-        player.teleport(target, TeleportCause.PLUGIN);
+        final CustomPortalTeleportEvent event = new CustomPortalTeleportEvent(player, this, target);
+        if (!event.isCancelled()) {
+            player.setFallDistance(0);
+            player.teleport(event.getTarget(), TeleportCause.PLUGIN);
+        }
     }
 
     /***************/
