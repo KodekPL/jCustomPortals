@@ -10,13 +10,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class MainClass extends JavaPlugin {
 
     public final static String prefix = ChatColor.GOLD + "[" + ChatColor.GREEN + "jPortal" + ChatColor.GOLD + "] ";
-    private final static File configFile = new File("plugins" + File.separator + "jCustomPortals" + File.separator + "config.yml");
+    public static File CONFIG_FILE, PORTALS_FILE, DESTS_FILE;
 
     private static WorldEditHandler worldEdit;
     public static long teleportCooldown;
     public static boolean checkPermissions;
 
     public void onEnable() {
+        CONFIG_FILE = new File(this.getDataFolder(), "config.yml");
+        PORTALS_FILE = new File(this.getDataFolder(), "portals.yml");
+        DESTS_FILE = new File(this.getDataFolder(), "destinations.yml");
+
         worldEdit = new WorldEditHandler(this);
 
         genConfig();
@@ -29,12 +33,12 @@ public class MainClass extends JavaPlugin {
     }
 
     public void genConfig() {
-        if (!configFile.exists()) {
-            final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(configFile);
+        if (!CONFIG_FILE.exists()) {
+            final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(CONFIG_FILE);
             ymlConfig.set("TeleportCooldown", 1000L);
             ymlConfig.set("CheckPermissions", true);
             try {
-                ymlConfig.save(configFile);
+                ymlConfig.save(CONFIG_FILE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -42,7 +46,7 @@ public class MainClass extends JavaPlugin {
     }
 
     public void loadConfig() {
-        final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(configFile);
+        final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(CONFIG_FILE);
         checkPermissions = ymlConfig.getBoolean("CheckPermissions", true);
         teleportCooldown = ymlConfig.getLong("TeleportCooldown", 1000L);
     }

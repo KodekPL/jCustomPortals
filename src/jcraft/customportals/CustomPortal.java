@@ -1,6 +1,8 @@
 package jcraft.customportals;
 
-import java.io.File;
+import static jcraft.customportals.MainClass.DESTS_FILE;
+import static jcraft.customportals.MainClass.PORTALS_FILE;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,9 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class CustomPortal {
-
-    private static final File portalsFile = new File("plugins" + File.separator + "jCustomPortals" + File.separator + "portals.yml");
-    private static final File destinationFile = new File("plugins" + File.separator + "jCustomPortals" + File.separator + "destinations.yml");
 
     private final String name;
     private final PortalLocation location;
@@ -60,10 +59,10 @@ public class CustomPortal {
     /***************/
 
     public static void loadPortals() {
-        if (!portalsFile.exists()) return;
+        if (!PORTALS_FILE.exists()) return;
         PortalWorld.clearWorldPortals();
 
-        final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(portalsFile);
+        final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(PORTALS_FILE);
         final Set<String> portals = ymlConfig.getConfigurationSection("Portals").getKeys(false);
 
         for (String name : portals) {
@@ -97,12 +96,12 @@ public class CustomPortal {
         portalWorld.addPortal(name, portal);
 
         if (save) {
-            final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(portalsFile);
+            final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(PORTALS_FILE);
             ymlConfig.set("Portals." + portal.getName() + ".World", portal.getLocation().getWorld().getName());
             ymlConfig.set("Portals." + portal.getName() + ".Location", portal.getLocation().serializeLocation());
             ymlConfig.set("Portals." + portal.getName() + ".Destination", portal.getDestination());
             try {
-                ymlConfig.save(portalsFile);
+                ymlConfig.save(PORTALS_FILE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -114,10 +113,10 @@ public class CustomPortal {
         final PortalWorld portalWorld = PortalWorld.getWorld(world);
         portalWorld.removePortal(name);
 
-        final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(portalsFile);
+        final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(PORTALS_FILE);
         ymlConfig.set("Portals." + name, null);
         try {
-            ymlConfig.save(portalsFile);
+            ymlConfig.save(PORTALS_FILE);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -159,10 +158,10 @@ public class CustomPortal {
     /******************/
 
     public static void loadDestinations() {
-        if (!destinationFile.exists()) return;
+        if (!DESTS_FILE.exists()) return;
         PortalWorld.clearDestinations();
 
-        final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(destinationFile);
+        final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(DESTS_FILE);
         final Set<String> destinations = ymlConfig.getConfigurationSection("Destinations").getKeys(false);
 
         for (String name : destinations) {
@@ -194,11 +193,11 @@ public class CustomPortal {
         PortalWorld.addDestination(name.toLowerCase(), dest);
 
         if (save) {
-            final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(destinationFile);
+            final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(DESTS_FILE);
             ymlConfig.set("Destinations." + name + ".Location", dest.getWorld().getName() + "," + dest.getX() + "," + dest.getY() + "," + dest.getZ()
                     + "," + dest.getYaw() + "," + dest.getPitch());
             try {
-                ymlConfig.save(destinationFile);
+                ymlConfig.save(DESTS_FILE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -209,10 +208,10 @@ public class CustomPortal {
         name = name.toLowerCase();
         PortalWorld.removeDestination(name);
 
-        final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(destinationFile);
+        final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(DESTS_FILE);
         ymlConfig.set("Destinations." + name, null);
         try {
-            ymlConfig.save(destinationFile);
+            ymlConfig.save(DESTS_FILE);
         } catch (IOException e) {
             e.printStackTrace();
         }
