@@ -30,39 +30,21 @@ public class CommandsHandler implements CommandExecutor {
 
         if (args.length == 0) {
             final String jportal = ChatColor.GOLD + "  /jportal " + ChatColor.YELLOW;
-            // jportal create destination [NAME]
-            player.sendMessage(jportal + "create destination [DESTINATION NAME]" + ChatColor.BLUE
-                    + " - Creates teleport destination with specified name on player position.");
-            // jportal create portal [NAME] [NAME]
-            player.sendMessage(jportal + "create portal [PORTAL NAME] [DESTINATION NAME]" + ChatColor.BLUE
-                    + " - Creates portal with the specified name to destination with specified name.");
-            // jportal info destination [NAME]
-            player.sendMessage(jportal + "info destination [DESTINATION NAME]" + ChatColor.BLUE
-                    + " - Displays informations about destintion of specified name.");
-            // jportal info portal [NAME]
-            player.sendMessage(jportal + "info portal [PORTAL NAME]" + ChatColor.BLUE
-                    + " - Displays informations about destintion of specified name.");
-            // jportal delete destination [NAME]
-            player.sendMessage(jportal + "delete destination [DESTINATION NAME]" + ChatColor.BLUE
-                    + " - Removes portal destination of specified name.");
-            // jportal delete portal [NAME]
-            player.sendMessage(jportal + "delete portal [PORTAL NAME]" + ChatColor.BLUE + " - Removes portal of specified name.");
-            // jportal modify destination [NAME]
-            player.sendMessage(jportal + "modify destination [DESTINATION NAME]" + ChatColor.BLUE
-                    + " - Changes destination position of specified name to player position.");
-            // jportal modify portal destination [NAME] [NAME]
-            player.sendMessage(jportal + "modify portal destination [PORTAL NAME] [DESTINATION NAME]" + ChatColor.BLUE
-                    + " - Changes destination of specified portal name.");
-            // jportal modify portal location [NAME]
-            player.sendMessage(jportal + "modify portal location [PORTAL NAME]" + ChatColor.BLUE + " - Changes portal shape of specified name.");
-            // jportal teleport [NAME]
-            player.sendMessage(jportal + "teleport [DESTINATION NAME]" + ChatColor.BLUE + " - Teleports to destination of specified name.");
-            // jportal list portal
-            player.sendMessage(jportal + "list portal" + ChatColor.BLUE + " - Displays list of all portal names.");
-            // jportal list destination
-            player.sendMessage(jportal + "list destination" + ChatColor.BLUE + " - Displays list of all destination names.");
-            // jportal reload
-            player.sendMessage(jportal + "reload" + ChatColor.BLUE + " - Reloads config file, portal list and destination list.");
+            player.sendMessage(new String[]{
+                  jportal + "create destination [DESTINATION NAME]" + ChatColor.BLUE + " - Creates teleport destination with specified name on player position.",
+                  jportal + "create portal [PORTAL NAME] [DESTINATION NAME]" + ChatColor.BLUE + " - Creates portal with the specified name to destination with specified name.",
+                  jportal + "info destination [DESTINATION NAME]" + ChatColor.BLUE + " - Displays informations about destintion of specified name.",
+                  jportal + "info portal [PORTAL NAME]" + ChatColor.BLUE + " - Displays informations about destintion of specified name.",
+                  jportal + "delete destination [DESTINATION NAME]" + ChatColor.BLUE + " - Removes portal destination of specified name.",
+                  jportal + "delete portal [PORTAL NAME]" + ChatColor.BLUE + " - Removes portal of specified name.",
+                  jportal + "modify destination [DESTINATION NAME]" + ChatColor.BLUE + " - Changes destination position of specified name to player position.",
+                  jportal + "modify portal destination [PORTAL NAME] [DESTINATION NAME]" + ChatColor.BLUE + " - Changes destination of specified portal name.",
+                  jportal + "modify portal location [PORTAL NAME]" + ChatColor.BLUE + " - Changes portal shape of specified name.",
+                  jportal + "teleport [DESTINATION NAME]" + ChatColor.BLUE + " - Teleports to destination of specified name.",
+                  jportal + "list portal" + ChatColor.BLUE + " - Displays list of all portal names.",
+                  jportal + "list destination" + ChatColor.BLUE + " - Displays list of all destination names.",
+                  jportal + "reload" + ChatColor.BLUE + " - Reloads config file, portal list and destination list."
+            });
             return true;
         }
 
