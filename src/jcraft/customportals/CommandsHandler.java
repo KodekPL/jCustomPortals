@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
 public class CommandsHandler implements CommandExecutor {
@@ -279,13 +280,17 @@ public class CommandsHandler implements CommandExecutor {
         }
 
         Selection selection = MainClass.getWorldEdit().getSelection(player);
-        Location loc1 = selection.getMinimumPoint();
-        Location loc2 = selection.getMaximumPoint();
+        if (selection instanceof CuboidSelection) {
+            Location loc1 = selection.getMinimumPoint();
+            Location loc2 = selection.getMaximumPoint();
 
-        final PortalLocation pLoc = new PortalLocation(selection.getWorld(), new Vector(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ()),
-                new Vector(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ()));
-        CustomPortal.addPortal(portalName, new CustomPortal(portalName, pLoc, destinationName), true);
-        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portalName + "' has been created and saved!");
+            final PortalLocation pLoc = new PortalLocation(selection.getWorld(), new Vector(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ()),
+                    new Vector(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ()));
+            CustomPortal.addPortal(portalName, new CustomPortal(portalName, pLoc, destinationName), true);
+            player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portalName + "' has been created and saved!");
+        } else {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Selection type need to be cuboid!");
+        }
     }
 
     public void infoPortalCmd(Player player, String permission, String[] args) {
@@ -338,14 +343,18 @@ public class CommandsHandler implements CommandExecutor {
         }
 
         Selection selection = MainClass.getWorldEdit().getSelection(player);
-        Location loc1 = selection.getMinimumPoint();
-        Location loc2 = selection.getMaximumPoint();
+        if (selection instanceof CuboidSelection) {
+            Location loc1 = selection.getMinimumPoint();
+            Location loc2 = selection.getMaximumPoint();
 
-        PortalLocation pLoc = new PortalLocation(selection.getWorld(), new Vector(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ()), new Vector(
-                loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ()));
-        CustomPortal.removePortal(portal.getName(), portal.getLocation().getWorld());
-        CustomPortal.addPortal(portal.getName(), new CustomPortal(portal.getName(), pLoc, portal.getDestination()), true);
-        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portalName + "' has been modified and saved!");
+            PortalLocation pLoc = new PortalLocation(selection.getWorld(), new Vector(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ()),
+                    new Vector(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ()));
+            CustomPortal.removePortal(portal.getName(), portal.getLocation().getWorld());
+            CustomPortal.addPortal(portal.getName(), new CustomPortal(portal.getName(), pLoc, portal.getDestination()), true);
+            player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portalName + "' has been modified and saved!");
+        } else {
+            player.sendMessage(MainClass.prefix + ChatColor.RED + "Selection type need to be cuboid!");
+        }
     }
 
     public void modifyPortalDestCmd(Player player, String permission, String[] args) {
