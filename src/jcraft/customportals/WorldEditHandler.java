@@ -10,20 +10,20 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 
 public class WorldEditHandler {
 
-    private WorldEditPlugin worldEdit;
+    private WorldEditPlugin WORLDEDIT;
 
-    public WorldEditHandler(MainClass mainClass) {
-        final Plugin plugin = mainClass.getServer().getPluginManager().getPlugin("WorldEdit");
-        if (plugin != null) {
-            worldEdit = (WorldEditPlugin) plugin;
+    public WorldEditHandler(CustomPortalsPlugin plugin) {
+        final Plugin we = plugin.getServer().getPluginManager().getPlugin("WorldEdit");
+        if (we != null) {
+            WORLDEDIT = (WorldEditPlugin) we;
         } else {
-            mainClass.getLogger().log(Level.SEVERE, "WorldEdit was not detected! CustomPortals is now disabled!");
-            mainClass.getServer().getPluginManager().disablePlugin(mainClass);
+            plugin.getLogger().log(Level.SEVERE, "WorldEdit was not detected! CustomPortals is now disabled!");
+            plugin.getServer().getPluginManager().disablePlugin(we);
         }
     }
 
     public boolean hasSelected(Player player) {
-        final Selection selection = worldEdit.getSelection(player);
+        final Selection selection = WORLDEDIT.getSelection(player);
         if (selection == null || selection.getMinimumPoint() == null || selection.getMaximumPoint() == null) {
             return false;
         }
@@ -31,7 +31,7 @@ public class WorldEditHandler {
     }
 
     public Selection getSelection(Player player) {
-        return worldEdit.getSelection(player);
+        return WORLDEDIT.getSelection(player);
     }
 
 }

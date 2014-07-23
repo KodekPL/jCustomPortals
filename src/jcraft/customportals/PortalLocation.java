@@ -76,4 +76,5 @@ public class PortalLocation {
     private static int parseInt(String number) {
         return Integer.parseInt(number);
     }
+
 }

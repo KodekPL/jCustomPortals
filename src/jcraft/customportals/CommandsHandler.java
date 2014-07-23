@@ -16,10 +16,10 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 
 public class CommandsHandler implements CommandExecutor {
 
-    private MainClass mainClass;
+    private CustomPortalsPlugin plugin;
 
-    public CommandsHandler(MainClass mainClass) {
-        this.mainClass = mainClass;
+    public CommandsHandler(CustomPortalsPlugin plugin) {
+        this.plugin = plugin;
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -49,9 +49,7 @@ public class CommandsHandler implements CommandExecutor {
                     jportal + "list destination" + ChatColor.BLUE + " - Displays list of all destination names.",
                     jportal + "reload" + ChatColor.BLUE + " - Reloads config file, portal list and destination list." });
             return true;
-        }
-
-        if (args.length == 1) {
+        } else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("reload")) {
                 reloadPluginCmd(player, "jportal.admin", args);
                 return true;
@@ -110,14 +108,14 @@ public class CommandsHandler implements CommandExecutor {
             }
         }
 
-        player.sendMessage(MainClass.prefix + ChatColor.RED + "Command was not found!");
+        player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Command was not found!");
         return false;
     }
 
     private boolean hasPermission(Player player, String permission) {
         if (player == null) return false;
         if (!player.hasPermission(permission)) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "No permission!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "No permission!");
             return false;
         }
         return true;
@@ -133,12 +131,13 @@ public class CommandsHandler implements CommandExecutor {
         final String destinationName = args[2].toLowerCase();
         final Location destination = CustomPortal.getDestination(destinationName);
         if (destination != null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name already exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Destination with this name already exists!");
             return;
         }
 
         CustomPortal.addDestination(destinationName, player.getEyeLocation().subtract(0, 1, 0), true);
-        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Destination with name '" + destinationName + "' has been created and saved!");
+        player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.GREEN + "Destination with name '" + destinationName
+                + "' has been created and saved!");
     }
 
     public void infoDestinationCmd(Player player, String permission, String[] args) {
@@ -147,7 +146,7 @@ public class CommandsHandler implements CommandExecutor {
         final String destinationName = args[2].toLowerCase();
         final Location destination = CustomPortal.getDestination(destinationName);
         if (destination == null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Destination with this name does not exists!");
             return;
         }
 
@@ -196,12 +195,13 @@ public class CommandsHandler implements CommandExecutor {
         final String destinationName = args[2].toLowerCase();
         final Location destination = CustomPortal.getDestination(destinationName);
         if (destination == null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Destination with this name does not exists!");
             return;
         }
 
         CustomPortal.addDestination(destinationName, player.getEyeLocation().subtract(0, 1, 0), true);
-        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Destination with name '" + destinationName + "' has been modified and saved!");
+        player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.GREEN + "Destination with name '" + destinationName
+                + "' has been modified and saved!");
     }
 
     public void deleteDestinationCmd(Player player, String permission, String[] args) {
@@ -210,18 +210,18 @@ public class CommandsHandler implements CommandExecutor {
         final String destinationName = args[2].toLowerCase();
         final Location destination = CustomPortal.getDestination(destinationName);
         if (destination == null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Destination with this name does not exists!");
             return;
         }
 
         final List<CustomPortal> linkedPortals = PortalWorld.getLinkedPortals(destinationName);
         if (!linkedPortals.isEmpty()) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "There are portals using this destination!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "There are portals using this destination!");
             return;
         }
 
         CustomPortal.removeDestination(destinationName);
-        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Destination with name '" + destinationName + "' has been removed!");
+        player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.GREEN + "Destination with name '" + destinationName + "' has been removed!");
     }
 
     public void teleportDestCmd(Player player, String permission, String[] args) {
@@ -230,12 +230,12 @@ public class CommandsHandler implements CommandExecutor {
         final String destinationName = args[1].toLowerCase();
         final Location destination = CustomPortal.getDestination(destinationName);
         if (destination == null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Destination with this name does not exists!");
             return;
         }
 
         player.teleport(destination);
-        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Teleported to destination with name '" + destinationName + "'!");
+        player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.GREEN + "Teleported to destination with name '" + destinationName + "'!");
     }
 
     /***************/
@@ -248,23 +248,23 @@ public class CommandsHandler implements CommandExecutor {
         final String portalName = args[2].toLowerCase();
         final CustomPortal portal = CustomPortal.getPortal(portalName);
         if (portal != null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Portal with this name already exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Portal with this name already exists!");
             return;
         }
 
         final String destinationName = args[3].toLowerCase();
         Location destination = CustomPortal.getDestination(destinationName);
         if (destination == null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Destination with this name does not exists!");
             return;
         }
 
-        if (!MainClass.getWorldEdit().hasSelected(player)) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "You need to first select region with WorldEdit to create portal!");
+        if (!CustomPortalsPlugin.getWorldEdit().hasSelected(player)) {
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "You need to first select region with WorldEdit to create portal!");
             return;
         }
 
-        Selection selection = MainClass.getWorldEdit().getSelection(player);
+        Selection selection = CustomPortalsPlugin.getWorldEdit().getSelection(player);
         if (selection instanceof CuboidSelection) {
             Location loc1 = selection.getMinimumPoint();
             Location loc2 = selection.getMaximumPoint();
@@ -272,9 +272,9 @@ public class CommandsHandler implements CommandExecutor {
             final PortalLocation pLoc = new PortalLocation(selection.getWorld(), new Vector(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ()),
                     new Vector(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ()));
             CustomPortal.addPortal(portalName, new CustomPortal(portalName, pLoc, destinationName), true);
-            player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portalName + "' has been created and saved!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.GREEN + "Portal with name '" + portalName + "' has been created and saved!");
         } else {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Selection type need to be cuboid!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Selection type need to be cuboid!");
         }
     }
 
@@ -283,7 +283,7 @@ public class CommandsHandler implements CommandExecutor {
 
         CustomPortal portal = CustomPortal.getPortal(args[2]);
         if (portal == null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Portal with this name does not exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Portal with this name does not exists!");
             return;
         }
 
@@ -318,16 +318,16 @@ public class CommandsHandler implements CommandExecutor {
         String portalName = args[3].toLowerCase();
         CustomPortal portal = CustomPortal.getPortal(portalName);
         if (portal == null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Portal with this name does not exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Portal with this name does not exists!");
             return;
         }
 
-        if (!MainClass.getWorldEdit().hasSelected(player)) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "You need to first select region with WorldEdit to modify portal!");
+        if (!CustomPortalsPlugin.getWorldEdit().hasSelected(player)) {
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "You need to first select region with WorldEdit to modify portal!");
             return;
         }
 
-        Selection selection = MainClass.getWorldEdit().getSelection(player);
+        Selection selection = CustomPortalsPlugin.getWorldEdit().getSelection(player);
         if (selection instanceof CuboidSelection) {
             Location loc1 = selection.getMinimumPoint();
             Location loc2 = selection.getMaximumPoint();
@@ -336,9 +336,9 @@ public class CommandsHandler implements CommandExecutor {
                     new Vector(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ()));
             CustomPortal.removePortal(portal.getName(), portal.getLocation().getWorld());
             CustomPortal.addPortal(portal.getName(), new CustomPortal(portal.getName(), pLoc, portal.getDestination()), true);
-            player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portalName + "' has been modified and saved!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.GREEN + "Portal with name '" + portalName + "' has been modified and saved!");
         } else {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Selection type need to be cuboid!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Selection type need to be cuboid!");
         }
     }
 
@@ -348,20 +348,20 @@ public class CommandsHandler implements CommandExecutor {
         String portalName = args[3].toLowerCase();
         CustomPortal portal = CustomPortal.getPortal(portalName);
         if (portal == null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Portal with this name does not exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Portal with this name does not exists!");
             return;
         }
 
         String destinationName = args[4].toLowerCase();
         Location destination = CustomPortal.getDestination(destinationName);
         if (destination == null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Destination with this name does not exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Destination with this name does not exists!");
             return;
         }
 
         portal.setDestination(destinationName);
         CustomPortal.addPortal(portal.getName(), portal, true);
-        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portal.getName() + "' has been modified and saved!");
+        player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.GREEN + "Portal with name '" + portal.getName() + "' has been modified and saved!");
     }
 
     public void deletePortalCmd(Player player, String permission, String[] args) {
@@ -370,12 +370,12 @@ public class CommandsHandler implements CommandExecutor {
         String portalName = args[2].toLowerCase();
         CustomPortal portal = CustomPortal.getPortal(portalName);
         if (portal == null) {
-            player.sendMessage(MainClass.prefix + ChatColor.RED + "Portal with this name does not exists!");
+            player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Portal with this name does not exists!");
             return;
         }
 
         CustomPortal.removePortal(portalName, portal.getLocation().getWorld());
-        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Portal with name '" + portalName + "' has been removed!");
+        player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.GREEN + "Portal with name '" + portalName + "' has been removed!");
     }
 
     /************/
@@ -385,10 +385,10 @@ public class CommandsHandler implements CommandExecutor {
     public void reloadPluginCmd(Player player, String permission, String[] args) {
         if (!hasPermission(player, permission)) return;
 
-        mainClass.loadConfig();
+        plugin.loadConfig();
         CustomPortal.loadDestinations();
         CustomPortal.loadPortals();
-        player.sendMessage(MainClass.prefix + ChatColor.GREEN + "Config file, destination list and portal list has been reloaded!");
+        player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.GREEN + "Config file, destination list and portal list has been reloaded!");
     }
 
 }

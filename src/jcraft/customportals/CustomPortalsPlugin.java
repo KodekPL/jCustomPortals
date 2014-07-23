@@ -7,12 +7,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class MainClass extends JavaPlugin {
+public class CustomPortalsPlugin extends JavaPlugin {
 
-    public final static String prefix = ChatColor.GOLD + "[" + ChatColor.GREEN + "jPortal" + ChatColor.GOLD + "] ";
+    public final static String PREFIX = ChatColor.GOLD + "[" + ChatColor.GREEN + "jPortal" + ChatColor.GOLD + "] ";
     public static File CONFIG_FILE, PORTALS_FILE, DESTS_FILE;
 
-    private static WorldEditHandler worldEdit;
+    private static WorldEditHandler WORLDEDIT_PLUGIN;
+
     public static long teleportCooldown;
     public static boolean checkPermissions;
     public static boolean resetFalling;
@@ -22,7 +23,7 @@ public class MainClass extends JavaPlugin {
         PORTALS_FILE = new File(this.getDataFolder(), "portals.yml");
         DESTS_FILE = new File(this.getDataFolder(), "destinations.yml");
 
-        worldEdit = new WorldEditHandler(this);
+        WORLDEDIT_PLUGIN = new WorldEditHandler(this);
 
         genConfig();
         loadConfig();
@@ -36,7 +37,7 @@ public class MainClass extends JavaPlugin {
     public void genConfig() {
         if (!CONFIG_FILE.exists()) {
             final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(CONFIG_FILE);
-            ymlConfig.set("TeleportCooldown", 1000L);
+            ymlConfig.set("TeleportCooldown", 500L);
             ymlConfig.set("CheckPermissions", true);
             ymlConfig.set("ResetFalling", true);
             try {
@@ -49,13 +50,13 @@ public class MainClass extends JavaPlugin {
 
     public void loadConfig() {
         final YamlConfiguration ymlConfig = YamlConfiguration.loadConfiguration(CONFIG_FILE);
-        teleportCooldown = ymlConfig.getLong("TeleportCooldown", 1000L);
+        teleportCooldown = ymlConfig.getLong("TeleportCooldown", 500L);
         checkPermissions = ymlConfig.getBoolean("CheckPermissions", true);
         resetFalling = ymlConfig.getBoolean("ResetFalling", true);
     }
 
     public static WorldEditHandler getWorldEdit() {
-        return worldEdit;
+        return WORLDEDIT_PLUGIN;
     }
 
 }

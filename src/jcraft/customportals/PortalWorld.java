@@ -3,6 +3,7 @@ package jcraft.customportals;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,16 +14,16 @@ import org.bukkit.util.Vector;
 
 public class PortalWorld {
 
-    private static final Collection<CustomPortal> emptyPortalSet = new ArrayList<CustomPortal>();
+    private static final Collection<CustomPortal> EMPTY_PORTAL_SET = new HashSet<CustomPortal>();
 
-    private static Map<World, PortalWorld> portalWorlds = new HashMap<World, PortalWorld>();
-    private static Map<String, Location> destinations = new HashMap<String, Location>();
+    private static Map<World, PortalWorld> PORTAL_WORLDS = new HashMap<World, PortalWorld>();
+    private static Map<String, Location> DESTINATIONS = new HashMap<String, Location>();
 
-    private Map<String, CustomPortal> portals;
-    private Map<Integer, Collection<CustomPortal>> chunksPortals;
+    private Map<String, CustomPortal> PORTALS;
+    private Map<Integer, Collection<CustomPortal>> PORTAL_CHUNKS;
 
     public PortalWorld() {
-        portals = new HashMap<String, CustomPortal>();
+        PORTALS = new HashMap<String, CustomPortal>();
     }
 
     /*************/
@@ -30,10 +31,10 @@ public class PortalWorld {
     /*************/
 
     public CustomPortal getPortalByName(String name) {
-        if (!portals.containsKey(name)) {
+        if (!PORTALS.containsKey(name)) {
             return null;
         }
-        return portals.get(name);
+        return PORTALS.get(name);
     }
 
     public CustomPortal getPortal(Location location) {
@@ -49,19 +50,19 @@ public class PortalWorld {
     private Collection<CustomPortal> getNearbyPortals(Location location) {
         Collection<CustomPortal> nearbyPortals = null;
 
-        if (chunksPortals != null) {
+        if (PORTAL_CHUNKS != null) {
             final int cx = blockToChunk(location.getBlockX());
             final int cz = blockToChunk(location.getBlockZ());
             final Integer hash = hashChunk(cx, cz);
 
-            nearbyPortals = chunksPortals.get(hash);
+            nearbyPortals = PORTAL_CHUNKS.get(hash);
         }
-        return (nearbyPortals != null) ? nearbyPortals : emptyPortalSet;
+        return (nearbyPortals != null) ? nearbyPortals : EMPTY_PORTAL_SET;
     }
 
     public void addPortal(String name, CustomPortal portal) {
-        if (this.chunksPortals == null) {
-            this.chunksPortals = new HashMap<Integer, Collection<CustomPortal>>();
+        if (this.PORTAL_CHUNKS == null) {
+            this.PORTAL_CHUNKS = new HashMap<Integer, Collection<CustomPortal>>();
         }
 
         final PortalLocation location = portal.getLocation();
@@ -74,23 +75,23 @@ public class PortalWorld {
         for (int cx = c1x; cx <= c2x; cx++) {
             for (int cz = c1z; cz <= c2z; cz++) {
                 Integer hashCode = hashChunk(cx, cz);
-                Collection<CustomPortal> portals = chunksPortals.get(hashCode);
+                Collection<CustomPortal> portals = PORTAL_CHUNKS.get(hashCode);
                 if (portals == null) {
                     portals = new ArrayList<CustomPortal>();
-                    chunksPortals.put(hashCode, portals);
+                    PORTAL_CHUNKS.put(hashCode, portals);
                 }
                 portals.add(portal);
             }
         }
-        portals.put(name, portal);
+        PORTALS.put(name, portal);
     }
 
     public void removePortal(String name) {
-        if (chunksPortals == null) {
+        if (PORTAL_CHUNKS == null) {
             return;
         }
 
-        final CustomPortal portal = portals.get(name);
+        final CustomPortal portal = PORTALS.get(name);
         final PortalLocation location = portal.getLocation();
         final Vector min = location.getMinimum();
         final Vector max = location.getMaximum();
@@ -100,10 +101,10 @@ public class PortalWorld {
         for (int cx = c1x; cx <= c2x; cx++) {
             for (int cz = c1z; cz <= c2z; cz++) {
                 Integer hashCode = hashChunk(cx, cz);
-                chunksPortals.get(hashCode).remove(portal);
+                PORTAL_CHUNKS.get(hashCode).remove(portal);
             }
         }
-        portals.remove(name);
+        PORTALS.remove(name);
     }
 
     private int hashChunk(int cx, int cz) {
@@ -118,11 +119,11 @@ public class PortalWorld {
     }
 
     public Collection<CustomPortal> getPortals() {
-        return portals.values();
+        return PORTALS.values();
     }
 
     public boolean hasPortals() {
-        return !portals.isEmpty();
+        return !PORTALS.isEmpty();
     }
 
     /******************/
@@ -130,31 +131,31 @@ public class PortalWorld {
     /******************/
 
     public static Location getDestination(String name) {
-        if (!destinations.containsKey(name)) {
+        if (!DESTINATIONS.containsKey(name)) {
             return null;
         }
-        return destinations.get(name);
+        return DESTINATIONS.get(name);
     }
 
     public static void addDestination(String name, Location destination) {
-        destinations.put(name, destination);
+        DESTINATIONS.put(name, destination);
     }
 
     public static void removeDestination(String name) {
-        destinations.remove(name);
+        DESTINATIONS.remove(name);
     }
 
     public static Set<String> getDestinations() {
-        return destinations.keySet();
+        return DESTINATIONS.keySet();
     }
 
     public static void clearDestinations() {
-        destinations.clear();
+        DESTINATIONS.clear();
     }
 
     public static List<CustomPortal> getLinkedPortals(String destination) {
         final List<CustomPortal> portals = new ArrayList<CustomPortal>();
-        for (PortalWorld portalWorld : portalWorlds.values()) {
+        for (PortalWorld portalWorld : PORTAL_WORLDS.values()) {
             for (CustomPortal portal : portalWorld.getPortals()) {
                 if (portal.getDestination().equalsIgnoreCase(destination)) {
                     portals.add(portal);
@@ -166,24 +167,24 @@ public class PortalWorld {
 
     private static PortalWorld addWorld(World world) {
         final PortalWorld portalWorld = new PortalWorld();
-        portalWorlds.put(world, portalWorld);
+        PORTAL_WORLDS.put(world, portalWorld);
         return portalWorld;
     }
 
     public static PortalWorld getWorld(World world) {
-        if (portalWorlds.containsKey(world)) {
-            return portalWorlds.get(world);
+        if (PORTAL_WORLDS.containsKey(world)) {
+            return PORTAL_WORLDS.get(world);
         } else {
             return addWorld(world);
         }
     }
 
     public static Collection<PortalWorld> getPortalWorlds() {
-        return portalWorlds.values();
+        return PORTAL_WORLDS.values();
     }
 
     public static void clearWorldPortals() {
-        portalWorlds.clear();
+        PORTAL_WORLDS.clear();
     }
 
 }

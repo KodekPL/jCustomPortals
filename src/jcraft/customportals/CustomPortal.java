@@ -1,7 +1,7 @@
 package jcraft.customportals;
 
-import static jcraft.customportals.MainClass.DESTS_FILE;
-import static jcraft.customportals.MainClass.PORTALS_FILE;
+import static jcraft.customportals.CustomPortalsPlugin.DESTS_FILE;
+import static jcraft.customportals.CustomPortalsPlugin.PORTALS_FILE;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,14 +46,14 @@ public class CustomPortal {
     }
 
     public void teleport(Player player) {
-        if (MainClass.checkPermissions && !player.hasPermission("jportal.teleport." + this.name)) {
+        if (CustomPortalsPlugin.checkPermissions && !player.hasPermission("jportal.teleport." + this.name)) {
             return;
         }
         final Location target = PortalWorld.getDestination(this.destination);
         final CustomPortalTeleportEvent event = new CustomPortalTeleportEvent(player, this, target);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
-            if (MainClass.resetFalling) {
+            if (CustomPortalsPlugin.resetFalling) {
                 player.setFallDistance(0);
             }
             player.teleport(event.getTarget(), TeleportCause.PLUGIN);

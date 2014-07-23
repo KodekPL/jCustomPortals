@@ -1,3 +1,3 @@
-TeleportCooldown: 1000
+TeleportCooldown: 500
 CheckPermissions: true
 ResetFalling: true

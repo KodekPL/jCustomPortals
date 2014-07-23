@@ -1,43 +1,43 @@
 name: jCustomPortals
-version: 1.0.5
-main: jcraft.customportals.MainClass
+version: 1.0.6
+main: jcraft.customportals.CustomPortalsPlugin
 author: Kodek
 depend: [WorldEdit]
 
 commands:
-   jportal:
-      permission: jportal.admin
+  jportal:
+    permission: jportal.admin
 permissions:
-   jportal.admin:
-      default: op
-      children:
-         jportal.createportal: true
-         jportal.createdest: true
-         jportal.infodest: true
-         jportal.infoportal: true
-         jportal.modifydest: true
-         jportal.modifyportal: true
-         jportal.teleportdest: true
-         jportal.listdest: true
-         jportal.listportal: true
-         jportal.teleport.*: true
-   jportal.createportal:
-      default: false
-   jportal.createdest:
-      default: false
-   jportal.infodest:
-      default: false
-   jportal.infoportal:
-      default: false
-   jportal.modifydest:
-      default: false
-   jportal.modifyportal:
-      default: false
-   jportal.teleportdest:
-      default: false
-   jportal.listdest:
-      default: false
-   jportal.listportal:
-      default: false
-   jportal.teleport.*:
-      default: false
+  jportal.admin:
+    default: op
+    children:
+      jportal.createportal: true
+      jportal.createdest: true
+      jportal.infodest: true
+      jportal.infoportal: true
+      jportal.modifydest: true
+      jportal.modifyportal: true
+      jportal.teleportdest: true
+      jportal.listdest: true
+      jportal.listportal: true
+      jportal.teleport.*: true
+  jportal.createportal:
+    default: false
+  jportal.createdest:
+    default: false
+  jportal.infodest:
+    default: false
+  jportal.infoportal:
+    default: false
+  jportal.modifydest:
+    default: false
+  jportal.modifyportal:
+    default: false
+  jportal.teleportdest:
+    default: false
+  jportal.listdest:
+    default: false
+  jportal.listportal:
+    default: false
+  jportal.teleport.*:
+    default: false

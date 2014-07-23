@@ -66,7 +66,7 @@ public class MovementSession {
             lastTeleport = System.currentTimeMillis();
             return true;
         }
-        if (System.currentTimeMillis() - lastTeleport >= MainClass.teleportCooldown) {
+        if (System.currentTimeMillis() - lastTeleport >= CustomPortalsPlugin.teleportCooldown) {
             lastTeleport = System.currentTimeMillis();
             return true;
         } else {

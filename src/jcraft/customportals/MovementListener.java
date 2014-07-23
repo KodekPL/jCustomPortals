@@ -8,14 +8,13 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class MovementListener implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerMove(PlayerMoveEvent event) {
         if (event.isCancelled()) {
             return;
         }
 
         final Player player = event.getPlayer();
-
         final MovementSession session = MovementSession.getSession(player);
         if (!session.canTeleport()) {
             return;
@@ -30,4 +29,5 @@ public class MovementListener implements Listener {
             portal.teleport(player);
         }
     }
+
 }
