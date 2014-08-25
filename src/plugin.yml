@@ -1,5 +1,5 @@
 name: jCustomPortals
-version: 1.0.6
+version: 1.0.7
 main: jcraft.customportals.CustomPortalsPlugin
 author: Kodek
 depend: [WorldEdit]

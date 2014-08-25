@@ -16,10 +16,10 @@ public class PortalWorld {
 
     private static final Collection<CustomPortal> EMPTY_PORTAL_SET = new HashSet<CustomPortal>();
 
-    private static Map<World, PortalWorld> PORTAL_WORLDS = new HashMap<World, PortalWorld>();
-    private static Map<String, Location> DESTINATIONS = new HashMap<String, Location>();
+    private static final Map<World, PortalWorld> PORTAL_WORLDS = new HashMap<World, PortalWorld>();
+    private static final Map<String, Location> DESTINATIONS = new HashMap<String, Location>();
 
-    private Map<String, CustomPortal> PORTALS;
+    private final Map<String, CustomPortal> PORTALS;
     private Map<Integer, Collection<CustomPortal>> PORTAL_CHUNKS;
 
     public PortalWorld() {

@@ -86,12 +86,11 @@ public class CustomPortal {
             }
 
             String locData = ymlConfig.getString("Portals." + name + ".Location");
-            PortalLocation location = PortalLocation.parseLocation(locData);
+            PortalLocation location = PortalLocation.parseLocation(world, locData);
             if (location == null) {
                 Bukkit.getLogger().log(Level.WARNING, "Portal with name '" + name + "' have incorrectly saved region!");
                 continue;
             }
-            location.setWorld(world);
 
             addPortal(name, new CustomPortal(name, location, destName), false);
         }

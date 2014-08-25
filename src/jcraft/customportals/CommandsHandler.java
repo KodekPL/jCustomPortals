@@ -16,7 +16,7 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 
 public class CommandsHandler implements CommandExecutor {
 
-    private CustomPortalsPlugin plugin;
+    private final CustomPortalsPlugin plugin;
 
     public CommandsHandler(CustomPortalsPlugin plugin) {
         this.plugin = plugin;
@@ -253,7 +253,7 @@ public class CommandsHandler implements CommandExecutor {
         }
 
         final String destinationName = args[3].toLowerCase();
-        Location destination = CustomPortal.getDestination(destinationName);
+        final Location destination = CustomPortal.getDestination(destinationName);
         if (destination == null) {
             player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Destination with this name does not exists!");
             return;
@@ -264,10 +264,10 @@ public class CommandsHandler implements CommandExecutor {
             return;
         }
 
-        Selection selection = CustomPortalsPlugin.getWorldEdit().getSelection(player);
+        final Selection selection = CustomPortalsPlugin.getWorldEdit().getSelection(player);
         if (selection instanceof CuboidSelection) {
-            Location loc1 = selection.getMinimumPoint();
-            Location loc2 = selection.getMaximumPoint();
+            final Location loc1 = selection.getMinimumPoint();
+            final Location loc2 = selection.getMaximumPoint();
 
             final PortalLocation pLoc = new PortalLocation(selection.getWorld(), new Vector(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ()),
                     new Vector(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ()));
@@ -281,7 +281,7 @@ public class CommandsHandler implements CommandExecutor {
     public void infoPortalCmd(Player player, String permission, String[] args) {
         if (!hasPermission(player, permission)) return;
 
-        CustomPortal portal = CustomPortal.getPortal(args[2]);
+        final CustomPortal portal = CustomPortal.getPortal(args[2]);
         if (portal == null) {
             player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Portal with this name does not exists!");
             return;
@@ -297,9 +297,9 @@ public class CommandsHandler implements CommandExecutor {
     public void listPortalCmd(Player player, String permission, String[] args) {
         if (!hasPermission(player, permission)) return;
 
-        StringBuilder sPortal = new StringBuilder();
+        final StringBuilder sPortal = new StringBuilder();
         boolean color = false;
-        List<CustomPortal> portals = CustomPortal.getPortals();
+        final List<CustomPortal> portals = CustomPortal.getPortals();
         for (CustomPortal portal : portals) {
             if (color) {
                 sPortal.append(ChatColor.YELLOW).append(portal.getName()).append(ChatColor.WHITE).append(", ");
@@ -315,8 +315,8 @@ public class CommandsHandler implements CommandExecutor {
     public void modifyPortalLocationCmd(Player player, String permission, String[] args) {
         if (!hasPermission(player, permission)) return;
 
-        String portalName = args[3].toLowerCase();
-        CustomPortal portal = CustomPortal.getPortal(portalName);
+        final String portalName = args[3].toLowerCase();
+        final CustomPortal portal = CustomPortal.getPortal(portalName);
         if (portal == null) {
             player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Portal with this name does not exists!");
             return;
@@ -327,12 +327,12 @@ public class CommandsHandler implements CommandExecutor {
             return;
         }
 
-        Selection selection = CustomPortalsPlugin.getWorldEdit().getSelection(player);
+        final Selection selection = CustomPortalsPlugin.getWorldEdit().getSelection(player);
         if (selection instanceof CuboidSelection) {
-            Location loc1 = selection.getMinimumPoint();
-            Location loc2 = selection.getMaximumPoint();
+            final Location loc1 = selection.getMinimumPoint();
+            final Location loc2 = selection.getMaximumPoint();
 
-            PortalLocation pLoc = new PortalLocation(selection.getWorld(), new Vector(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ()),
+            final PortalLocation pLoc = new PortalLocation(selection.getWorld(), new Vector(loc1.getBlockX(), loc1.getBlockY(), loc1.getBlockZ()),
                     new Vector(loc2.getBlockX(), loc2.getBlockY(), loc2.getBlockZ()));
             CustomPortal.removePortal(portal.getName(), portal.getLocation().getWorld());
             CustomPortal.addPortal(portal.getName(), new CustomPortal(portal.getName(), pLoc, portal.getDestination()), true);
@@ -345,15 +345,15 @@ public class CommandsHandler implements CommandExecutor {
     public void modifyPortalDestCmd(Player player, String permission, String[] args) {
         if (!hasPermission(player, permission)) return;
 
-        String portalName = args[3].toLowerCase();
-        CustomPortal portal = CustomPortal.getPortal(portalName);
+        final String portalName = args[3].toLowerCase();
+        final CustomPortal portal = CustomPortal.getPortal(portalName);
         if (portal == null) {
             player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Portal with this name does not exists!");
             return;
         }
 
-        String destinationName = args[4].toLowerCase();
-        Location destination = CustomPortal.getDestination(destinationName);
+        final String destinationName = args[4].toLowerCase();
+        final Location destination = CustomPortal.getDestination(destinationName);
         if (destination == null) {
             player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Destination with this name does not exists!");
             return;
@@ -367,8 +367,8 @@ public class CommandsHandler implements CommandExecutor {
     public void deletePortalCmd(Player player, String permission, String[] args) {
         if (!hasPermission(player, permission)) return;
 
-        String portalName = args[2].toLowerCase();
-        CustomPortal portal = CustomPortal.getPortal(portalName);
+        final String portalName = args[2].toLowerCase();
+        final CustomPortal portal = CustomPortal.getPortal(portalName);
         if (portal == null) {
             player.sendMessage(CustomPortalsPlugin.PREFIX + ChatColor.RED + "Portal with this name does not exists!");
             return;

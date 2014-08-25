@@ -10,16 +10,15 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 
 public class WorldEditHandler {
 
-    private WorldEditPlugin WORLDEDIT;
+    private final WorldEditPlugin WORLDEDIT;
 
     public WorldEditHandler(CustomPortalsPlugin plugin) {
         final Plugin we = plugin.getServer().getPluginManager().getPlugin("WorldEdit");
-        if (we != null) {
-            WORLDEDIT = (WorldEditPlugin) we;
-        } else {
+        if (we == null) {
             plugin.getLogger().log(Level.SEVERE, "WorldEdit was not detected! CustomPortals is now disabled!");
             plugin.getServer().getPluginManager().disablePlugin(we);
         }
+        WORLDEDIT = (WorldEditPlugin) we;
     }
 
     public boolean hasSelected(Player player) {

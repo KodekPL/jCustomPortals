@@ -6,9 +6,9 @@ import org.bukkit.util.Vector;
 
 public class PortalLocation {
 
-    private World world;
-    private int minX, minY, minZ;
-    private int maxX, maxY, maxZ;
+    private final World world;
+    private final int minX, minY, minZ;
+    private final int maxX, maxY, maxZ;
 
     public PortalLocation(World world, Vector v1, Vector v2) {
         this.world = world;
@@ -18,10 +18,6 @@ public class PortalLocation {
         this.maxX = Math.max(v1.getBlockX(), v2.getBlockX());
         this.maxY = Math.max(v1.getBlockY(), v2.getBlockY());
         this.maxZ = Math.max(v1.getBlockZ(), v2.getBlockZ());
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
     }
 
     public World getWorld() {
@@ -37,13 +33,10 @@ public class PortalLocation {
     }
 
     public boolean intersect(Location location) {
-        return this.intersect(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        return this.intersect(location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
-    public boolean intersect(World world, int x, int y, int z) {
-        if (this.world != world) {
-            return false;
-        }
+    public boolean intersect(int x, int y, int z) {
         if (!(x >= minX && x <= maxX)) {
             return false;
         }
@@ -60,12 +53,12 @@ public class PortalLocation {
         return minX + "," + minY + "," + minZ + ":" + maxX + "," + maxY + "," + maxZ;
     }
 
-    public static PortalLocation parseLocation(String location) {
+    public static PortalLocation parseLocation(World world, String location) {
         try {
             final String[] XYZ = location.split(":");
             final String[] minXYZ = XYZ[0].split(",");
             final String[] maxXYZ = XYZ[1].split(",");
-            return new PortalLocation(null, new Vector(parseInt(minXYZ[0]), parseInt(minXYZ[1]), parseInt(minXYZ[2])), new Vector(
+            return new PortalLocation(world, new Vector(parseInt(minXYZ[0]), parseInt(minXYZ[1]), parseInt(minXYZ[2])), new Vector(
                     parseInt(maxXYZ[0]), parseInt(maxXYZ[1]), parseInt(maxXYZ[2])));
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
